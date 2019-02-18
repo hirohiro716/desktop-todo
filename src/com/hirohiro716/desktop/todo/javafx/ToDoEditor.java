@@ -108,9 +108,13 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 css = CSSHelper.updateStyleValue(css, "-fx-font-family", allSettings.getString(Property.FONT_STYLE.getPhysicalName()));
                 this.vboxRoot.setStyle(css);
                 // テキスト色
-                String textFill = allSettings.getString(Property.TEXT_FILL.getPhysicalName());
+                this.textFill = allSettings.getString(Property.TEXT_FILL.getPhysicalName());
                 for (Node node: this.paneRoot.lookupAll("Label")) {
-                    node.setStyle(CSSHelper.updateStyleValue(node.getStyle(), "-fx-text-fill", textFill));
+                    if (COLUMN_ID_OF_ITEM_COUNT.equals(node.getId())) {
+                        this.updateItemCountLabelColor((Label) node);
+                    } else {
+                        node.setStyle(CSSHelper.updateStyleValue(node.getStyle(), "-fx-text-fill", this.textFill));
+                    }
                 }
                 // 選択行の背景色
                 this.rudeArrayTable.setSelectedRowColor(allSettings.getString(Property.SELECTED_ROW_BACKGROUND.getPhysicalName()));
@@ -130,6 +134,8 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
     }
     
     private String filer = null;
+    
+    private String textFill = (String) Property.TEXT_FILL.getDefaultValue();
     
     @Override
     protected void beforeShowDoPreparation() throws Exception {
@@ -319,10 +325,12 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 String directory = StringConverter.nullReplace(item.getString(Column.DIRECTORY.getPhysicalName()), "");
                 if (FileHelper.isExistsDirectory(directory)) {
                     File file = new File(directory);
-                    control.setText(file.list().length + "個");
+                    int numberOfInnerFiles = file.list().length;
+                    control.setText(String.valueOf(numberOfInnerFiles));
                 } else {
                     control.setText("-");
                 }
+                editor.updateItemCountLabelColor(control);
             }
         });
         this.rudeArrayTable.getHeaderLabel(COLUMN_ID_OF_ITEM_COUNT).setPrefWidth(tableWidth * 0.1);
@@ -400,6 +408,19 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
             }
         });
         this.rudeArrayTable.getHeaderLabel(COLUMN_ID_OF_DELETE).setPrefWidth(tableWidth * 0.05);
+    }
+    
+    /**
+     * アイテム数の数がゼロのときは赤字で表示する.
+     * @param label
+     */
+    private void updateItemCountLabelColor(Label label) {
+        String css = label.getStyle();
+        css = CSSHelper.updateStyleValue(css, "-fx-text-fill", this.textFill);
+        if (label.getText().equals("0")) {
+            css = CSSHelper.updateStyleValue(css, "-fx-text-fill", "#c00");
+        }
+        label.setStyle(css);
     }
     
     /**
