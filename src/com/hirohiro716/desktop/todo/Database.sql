@@ -22,6 +22,7 @@ CREATE TABLE [todo]
 	[id] integer NOT NULL UNIQUE,
 	[description] text,
 	[directory] text,
+	[limit_of_item_count] integer NOT NULL,
 	PRIMARY KEY ([id])
 );
 

@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 
 import com.hirohiro716.ExceptionHelper;
+import com.hirohiro716.RegexHelper.RegexPattern;
 import com.hirohiro716.RudeArray;
 import com.hirohiro716.StringConverter;
 import com.hirohiro716.database.sqlite.SQLite.IsolationLevel;
@@ -27,6 +28,7 @@ import com.hirohiro716.javafx.dialog.alert.InstantAlert;
 import com.hirohiro716.javafx.dialog.confirm.ConfirmPane;
 import com.hirohiro716.javafx.dialog.sort.SortPaneDialog;
 import com.hirohiro716.javafx.dialog.text.LimitTextAreaPaneDialog;
+import com.hirohiro716.javafx.dialog.text.LimitTextFieldPaneDialog;
 import com.hirohiro716.validate.StringValidator;
 
 import javafx.beans.value.ChangeListener;
@@ -74,6 +76,9 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
     private Button buttonSetting;
     
     @FXML
+    private Button buttonMinimize;
+    
+    @FXML
     private Button buttonClose;
     
     @Override
@@ -111,7 +116,9 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 this.textFill = allSettings.getString(Property.TEXT_FILL.getPhysicalName());
                 for (Node node: this.paneRoot.lookupAll("Label")) {
                     if (COLUMN_ID_OF_ITEM_COUNT.equals(node.getId())) {
-                        this.updateItemCountLabelColor((Label) node);
+                        Label label = (Label) node;
+                        RudeArray item = this.rudeArrayTable.findRelationalItem(label);
+                        this.updateItemCountLabel(item, label);
                     } else {
                         node.setStyle(CSSHelper.updateStyleValue(node.getStyle(), "-fx-text-fill", this.textFill));
                     }
@@ -157,7 +164,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
-                    pane.setOpacity(0.95);
+                    pane.setOpacity(1);
                     try {
                         editor.updateRudeArrayTable();
                     } catch (SQLException exception) {
@@ -170,14 +177,6 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
         });
         // RudeArrayTableを初期化する
         this.preparationToDoTable(screen.getBounds().getWidth());
-        // 閉じる系の動作設定
-        this.setCloseConfirmShowing(false);
-        this.buttonClose.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                editor.close();
-            }
-        });
         // 追加
         this.buttonAdd.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -239,6 +238,21 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 } catch (Exception exception) {
                     InstantAlert.show(editor.paneRoot, ExceptionHelper.createDetailMessage(exception), Pos.CENTER, 3000);
                 }
+            }
+        });
+        // 最小化
+        this.buttonMinimize.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                editor.getStage().setIconified(true);
+            }
+        });
+        // 閉じる系の動作設定
+        this.setCloseConfirmShowing(false);
+        this.buttonClose.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                editor.close();
             }
         });
         // データ入力
@@ -318,19 +332,37 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
             public Label newInstance(RudeArray item) {
                 Label label = new Label();
                 label.setAlignment(Pos.CENTER);
+                label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        if (event.getClickCount() != 2 || event.getButton() != MouseButton.PRIMARY) {
+                            return;
+                        }
+                        LimitTextFieldPaneDialog dialog = new LimitTextFieldPaneDialog(editor.paneRoot);
+                        dialog.setTitle("制限の入力");
+                        dialog.setMessage("アイテム数の制限を入力してOKを押してください。");
+                        dialog.setDefaultValue(item.getString(Column.LIMIT_OF_ITEM_COUNT.getPhysicalName()));
+                        dialog.addPermitRegex(RegexPattern.INTEGER_NARROW_ONLY.getPattern(), false);
+                        dialog.setTextFieldAlignment(Pos.CENTER_RIGHT);
+                        dialog.setCloseEvent(new CloseEventHandler<String>() {
+                            @Override
+                            public void handle(String resultValue) {
+                                Integer value = StringConverter.stringToInteger(resultValue);
+                                if (value != null) {
+                                    item.put(Column.LIMIT_OF_ITEM_COUNT.getPhysicalName(), value);
+                                    editor.rudeArrayTable.updateRow(item);
+                                    editor.importDataFromForm();
+                                }
+                            }
+                        });
+                        dialog.show();
+                    }
+                });
                 return label;
             }
             @Override
             public void setValueForControl(RudeArray item, Label control) {
-                String directory = StringConverter.nullReplace(item.getString(Column.DIRECTORY.getPhysicalName()), "");
-                if (FileHelper.isExistsDirectory(directory)) {
-                    File file = new File(directory);
-                    int numberOfInnerFiles = file.list().length;
-                    control.setText(String.valueOf(numberOfInnerFiles));
-                } else {
-                    control.setText("-");
-                }
-                editor.updateItemCountLabelColor(control);
+                editor.updateItemCountLabel(item, control);
             }
         });
         this.rudeArrayTable.getHeaderLabel(COLUMN_ID_OF_ITEM_COUNT).setPrefWidth(tableWidth * 0.1);
@@ -342,23 +374,24 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 label.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
-                            LimitTextAreaPaneDialog dialog = new LimitTextAreaPaneDialog(editor.paneRoot);
-                            dialog.setTitle("説明の入力");
-                            dialog.setMessage("説明を入力してOKを押してください。");
-                            dialog.setDefaultValue(item.getString(Column.DESCRIPTION.getPhysicalName()));
-                            dialog.setCloseEvent(new CloseEventHandler<String>() {
-                                @Override
-                                public void handle(String resultValue) {
-                                    if (resultValue != null) {
-                                        item.put(Column.DESCRIPTION.getPhysicalName(), resultValue);
-                                        editor.rudeArrayTable.updateRow(item);
-                                        editor.importDataFromForm();
-                                    }
-                                }
-                            });
-                            dialog.show();
+                        if (event.getClickCount() != 2 || event.getButton() != MouseButton.PRIMARY) {
+                            return;
                         }
+                        LimitTextAreaPaneDialog dialog = new LimitTextAreaPaneDialog(editor.paneRoot);
+                        dialog.setTitle("説明の入力");
+                        dialog.setMessage("説明を入力してOKを押してください。");
+                        dialog.setDefaultValue(item.getString(Column.DESCRIPTION.getPhysicalName()));
+                        dialog.setCloseEvent(new CloseEventHandler<String>() {
+                            @Override
+                            public void handle(String resultValue) {
+                                if (resultValue != null) {
+                                    item.put(Column.DESCRIPTION.getPhysicalName(), resultValue);
+                                    editor.rudeArrayTable.updateRow(item);
+                                    editor.importDataFromForm();
+                                }
+                            }
+                        });
+                        dialog.show();
                     }
                 });
                 label.setPadding(new Insets(20, 20, 20, 20));
@@ -411,16 +444,30 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
     }
     
     /**
-     * アイテム数の数がゼロのときは赤字で表示する.
-     * @param label
+     * アイテム数の数が制限を超えたときは赤字で表示する.
+     * @param row TODOの行情報
+     * @param label 対象のLabel
      */
-    private void updateItemCountLabelColor(Label label) {
-        String css = label.getStyle();
-        css = CSSHelper.updateStyleValue(css, "-fx-text-fill", this.textFill);
-        if (label.getText().equals("0")) {
-            css = CSSHelper.updateStyleValue(css, "-fx-text-fill", "#c00");
+    private void updateItemCountLabel(RudeArray row, Label label) {
+        String directory = StringConverter.nullReplace(row.getString(Column.DIRECTORY.getPhysicalName()), "");
+        if (FileHelper.isExistsDirectory(directory)) {
+            File file = new File(directory);
+            int numberOfInnerFiles = file.list().length;
+            int limit = row.getInteger(Column.LIMIT_OF_ITEM_COUNT.getPhysicalName());
+            StringBuilder builder = new StringBuilder();
+            builder.append(numberOfInnerFiles);
+            builder.append(" / ");
+            builder.append(limit);
+            label.setText(builder.toString());
+            String css = label.getStyle();
+            css = CSSHelper.updateStyleValue(css, "-fx-text-fill", this.textFill);
+            if (limit < numberOfInnerFiles) {
+                css = CSSHelper.updateStyleValue(css, "-fx-text-fill", "#c00");
+            }
+            label.setStyle(css);
+        } else {
+            label.setText("-");
         }
-        label.setStyle(css);
     }
     
     /**

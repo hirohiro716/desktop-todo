@@ -41,7 +41,7 @@
 		<suspend_validator>false</suspend_validator>
 		<export_setting>
 			<export_ddl_setting>
-				<output_path>Database.sql</output_path>
+				<output_path>src/com/hirohiro716/desktop/todo/Database.sql</output_path>
 				<encoding>UTF-8</encoding>
 				<line_feed>LF</line_feed>
 				<is_open_after_saved>false</is_open_after_saved>
@@ -49,7 +49,7 @@
 				<category_id>null</category_id>
 				<ddl_target>
 					<create_comment>true</create_comment>
-					<create_foreignKey>true</create_foreignKey>
+					<create_foreignKey>false</create_foreignKey>
 					<create_index>true</create_index>
 					<create_sequence>true</create_sequence>
 					<create_table>true</create_table>
@@ -138,7 +138,7 @@
 			</connections>
 			<display>false</display>
 			<creation_date>2019-02-17 16:04:23</creation_date>
-			<updated_date>2019-02-17 18:05:16</updated_date>
+			<updated_date>2019-02-18 18:20:44</updated_date>
 			<model_property>
 				<name>プロジェクト名</name>
 				<value></value>
@@ -231,12 +231,28 @@
 			<args></args>
 			<char_semantics>false</char_semantics>
 			<description></description>
+			<logical_name>アイテム数の制限</logical_name>
+			<physical_name>limit_of_item_count</physical_name>
+			<type>integer</type>
+		</word>
+		<word>
+			<id>4</id>
+			<length>null</length>
+			<decimal>null</decimal>
+			<array>false</array>
+			<array_dimension>null</array_dimension>
+			<unsigned>false</unsigned>
+			<zerofill>false</zerofill>
+			<binary>false</binary>
+			<args></args>
+			<char_semantics>false</char_semantics>
+			<description></description>
 			<logical_name>名称</logical_name>
 			<physical_name>name</physical_name>
 			<type>text</type>
 		</word>
 		<word>
-			<id>4</id>
+			<id>5</id>
 			<length>null</length>
 			<decimal>null</decimal>
 			<array>false</array>
@@ -278,7 +294,7 @@
 			<option></option>
 			<columns>
 				<normal_column>
-					<word_id>3</word_id>
+					<word_id>4</word_id>
 					<id>0</id>
 					<description></description>
 					<unique_key_name></unique_key_name>
@@ -311,7 +327,7 @@
 					</sequence>
 				</normal_column>
 				<normal_column>
-					<word_id>4</word_id>
+					<word_id>5</word_id>
 					<id>1</id>
 					<description></description>
 					<unique_key_name></unique_key_name>
@@ -453,6 +469,39 @@
 					<auto_increment>false</auto_increment>
 					<foreign_key>false</foreign_key>
 					<not_null>false</not_null>
+					<primary_key>false</primary_key>
+					<unique_key>false</unique_key>
+					<character_set></character_set>
+					<collation></collation>
+					<sequence>
+						<name></name>
+						<schema></schema>
+						<increment></increment>
+						<min_value></min_value>
+						<max_value></max_value>
+						<start></start>
+						<cache></cache>
+						<nocache>false</nocache>
+						<cycle>false</cycle>
+						<order>false</order>
+						<description></description>
+						<data_type></data_type>
+						<decimal_size>0</decimal_size>
+					</sequence>
+				</normal_column>
+				<normal_column>
+					<word_id>3</word_id>
+					<id>5</id>
+					<description></description>
+					<unique_key_name></unique_key_name>
+					<logical_name></logical_name>
+					<physical_name></physical_name>
+					<type>integer</type>
+					<constraint></constraint>
+					<default_value></default_value>
+					<auto_increment>false</auto_increment>
+					<foreign_key>false</foreign_key>
+					<not_null>true</not_null>
 					<primary_key>false</primary_key>
 					<unique_key>false</unique_key>
 					<character_set></character_set>

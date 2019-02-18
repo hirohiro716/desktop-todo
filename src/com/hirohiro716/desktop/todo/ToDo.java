@@ -26,6 +26,7 @@ public class ToDo extends AbstractBindTableRows {
         ID("ID", null),
         DESCRIPTION("説明", null),
         DIRECTORY("関連ディレクトリ", null),
+        LIMIT_OF_ITEM_COUNT("アイテム数の制限", 999),
         ;
         
         private Column(String logicalName, Object defaultValue) {
@@ -123,6 +124,11 @@ public class ToDo extends AbstractBindTableRows {
                         break;
                     case DIRECTORY:
                         break;
+                    case LIMIT_OF_ITEM_COUNT:
+                        validator.addBlankCheck();
+                        validator.addIntegerCheck();
+                        validator.execute(row.getString(key));
+                        break;
                     }
                 } catch (com.hirohiro716.validate.ValidationException exception) {
                     throw new ValidationException(exception.getMessage(), column);
@@ -144,6 +150,8 @@ public class ToDo extends AbstractBindTableRows {
                 case DESCRIPTION:
                     break;
                 case DIRECTORY:
+                    break;
+                case LIMIT_OF_ITEM_COUNT:
                     break;
                 }
             }
