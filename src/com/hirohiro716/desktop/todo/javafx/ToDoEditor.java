@@ -154,7 +154,6 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                     pane.setOpacity(0.95);
                     try {
                         editor.updateRudeArrayTable();
-                        editor.updateContentFromSetting();
                     } catch (SQLException exception) {
                         InstantAlert.show(editor.paneRoot, ExceptionHelper.createDetailMessage("情報の取得に失敗しました。", exception), Pos.CENTER, 3000);
                     }
@@ -207,12 +206,18 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                         if (resultValue == null) {
                             return;
                         }
-                        editor.rudeArrayTable.clearRows();
-                        for (RudeArray row: resultValue.keySet()) {
-                            editor.rudeArrayTable.addRow(row);
+                        try {
+                            editor.rudeArrayTable.clearRows();
+                            for (RudeArray row: resultValue.keySet()) {
+                                editor.rudeArrayTable.addRow(row);
+                            }
+                            editor.rudeArrayTable.loadMoreRows();
+                            editor.rudeArrayTable.setSelectedItem(null);;
+                            editor.importDataFromForm();
+                            editor.updateContentFromSetting();
+                        } catch (SQLException exception) {
+                            InstantAlert.show(editor.paneRoot, ExceptionHelper.createDetailMessage(exception), Pos.CENTER, 3000);
                         }
-                        editor.rudeArrayTable.loadMoreRows();
-                        editor.importDataFromForm();
                     }
                 });
                 dialog.show();
@@ -230,8 +235,6 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 }
             }
         });
-        // スタイル
-        this.updateContentFromSetting();
         // データ入力
         this.updateRudeArrayTable();
     }
