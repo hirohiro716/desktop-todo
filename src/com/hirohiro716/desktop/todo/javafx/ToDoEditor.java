@@ -24,6 +24,7 @@ import com.hirohiro716.javafx.control.table.RudeArrayTable;
 import com.hirohiro716.javafx.data.AbstractEditor;
 import com.hirohiro716.javafx.dialog.DialogResult;
 import com.hirohiro716.javafx.dialog.InterfaceDialog.CloseEventHandler;
+import com.hirohiro716.javafx.dialog.alert.AlertPane;
 import com.hirohiro716.javafx.dialog.alert.InstantAlert;
 import com.hirohiro716.javafx.dialog.confirm.ConfirmPane;
 import com.hirohiro716.javafx.dialog.sort.SortPaneDialog;
@@ -82,7 +83,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
     private Button buttonClose;
     
     @Override
-    protected void editDataController() throws Exception {
+    protected void editDataController() throws SQLException {
         Database database = new Database();
         database.connect();
         ToDo todo = new ToDo(database);
@@ -145,7 +146,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
     private String textFill = (String) Property.TEXT_FILL.getDefaultValue();
     
     @Override
-    protected void beforeShowDoPreparation() throws Exception {
+    protected void beforeShowDoPreparation() throws IOException, SQLException {
         ToDoEditor editor = this;
         this.setFxml(this.getClass().getResource(this.getClass().getSimpleName() + ".fxml"));
         this.getStage().initStyle(StageStyle.TRANSPARENT);
@@ -491,6 +492,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
 
     @Override
     protected void importDataFromForm() {
+        ToDoEditor editor = this;
         this.getDataController().clearRows();
         for (RudeArray row: this.rudeArrayTable.getItems()) {
             this.getDataController().addRow(row);
@@ -502,12 +504,22 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
             this.getDataController().update();
             this.getDataController().getDatabase().commit();
         } catch (Exception exception) {
-            InstantAlert.show(this.paneRoot, ExceptionHelper.createDetailMessage("情報の保存に失敗しました。", exception), Pos.CENTER, 3000);
+            AlertPane.show(ERROR_DIALOG_TITLE_SAVE, exception.getMessage(), editor.paneRoot, new CloseEventHandler<DialogResult>() {
+                @Override
+                public void handle(DialogResult resultValue) {
+                    try {
+                        editor.editDataController();
+                    } catch (SQLException exception) {
+                        editor.close();
+                    }
+                }
+            });
         }
     }
 
     @Override
-    protected void beforeCloseDoPreparation() throws Exception {
+    protected void beforeCloseDoPreparation() {
+        this.getDataController().getDatabase().close();
     }
 
 }

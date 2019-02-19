@@ -149,7 +149,7 @@ public class Setting extends AbstractBindTableRows {
     }
     
     @Override
-    public void validate() throws ValidationException, Exception {
+    public void validate() throws ValidationException {
         RudeArray row = this.getEditingAllSettings();
         for (Property property: Property.values()) {
             try {
@@ -191,7 +191,7 @@ public class Setting extends AbstractBindTableRows {
     }
 
     @Override
-    public void normalize() throws Exception {
+    public void normalize() {
         RudeArray row = this.getEditingAllSettings();
         for (Property property: Property.values()) {
             String key = property.getPhysicalName();

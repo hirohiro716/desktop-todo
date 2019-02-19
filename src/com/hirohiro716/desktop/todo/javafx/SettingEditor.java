@@ -1,11 +1,13 @@
 package com.hirohiro716.desktop.todo.javafx;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 
-import com.hirohiro716.ExceptionHelper;
 import com.hirohiro716.InterfaceKeyInputRobotJapanese.ImeMode;
 import com.hirohiro716.RegexHelper.RegexPattern;
 import com.hirohiro716.RudeArray;
+import com.hirohiro716.database.ValidationException;
 import com.hirohiro716.database.sqlite.SQLite.IsolationLevel;
 import com.hirohiro716.desktop.todo.Database;
 import com.hirohiro716.desktop.todo.Setting;
@@ -15,12 +17,13 @@ import com.hirohiro716.javafx.ImeHelper;
 import com.hirohiro716.javafx.PaneNodeFinder;
 import com.hirohiro716.javafx.control.LimitTextField;
 import com.hirohiro716.javafx.data.AbstractEditor;
-import com.hirohiro716.javafx.dialog.alert.InstantAlert;
-
+import com.hirohiro716.javafx.dialog.DialogResult;
+import com.hirohiro716.javafx.dialog.InterfaceDialog.CloseEventHandler;
+import com.hirohiro716.javafx.dialog.alert.AlertPane;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
@@ -45,7 +48,7 @@ public class SettingEditor extends AbstractEditor<Setting> {
     private RudeArray allSettings;
 
     @Override
-    protected void editDataController() throws Exception {
+    protected void editDataController() throws SQLException {
         Database database = new Database();
         database.connect();
         Setting setting = new Setting(database);
@@ -55,7 +58,7 @@ public class SettingEditor extends AbstractEditor<Setting> {
     }
 
     @Override
-    protected void beforeShowDoPreparation() throws Exception {
+    protected void beforeShowDoPreparation() throws IOException {
         SettingEditor editor = this;
         this.setFxml(this.getClass().getResource(this.getClass().getSimpleName() + ".fxml"));
         this.getStage().setResizable(false);
@@ -124,6 +127,7 @@ public class SettingEditor extends AbstractEditor<Setting> {
     
     @Override
     protected void importDataFromForm() {
+        SettingEditor editor = this;
         PaneNodeFinder finder = new PaneNodeFinder(this.paneRoot);
         for (Property property: Property.values()) {
             LimitTextField limitTextField;
@@ -155,13 +159,38 @@ public class SettingEditor extends AbstractEditor<Setting> {
             this.getDataController().update();
             this.getDataController().getDatabase().commit();
             this.close();
-        } catch (Exception exception) {
-            InstantAlert.show(this.paneRoot, ExceptionHelper.createDetailMessage("情報の保存に失敗しました。", exception), Pos.CENTER, 3000);
+        } catch (SQLException exception) {
+            AlertPane.show(ERROR_DIALOG_TITLE_SAVE, exception.getMessage(), editor.paneRoot, new CloseEventHandler<DialogResult>() {
+                @Override
+                public void handle(DialogResult resultValue) {
+                    try {
+                        editor.editDataController();
+                    } catch (SQLException exception) {
+                        editor.close();
+                    }
+                }
+            });
+        } catch (ValidationException exception) {
+            AlertPane.show(ERROR_DIALOG_TITLE_VALIDATION, exception.getMessage(), editor.paneRoot, new CloseEventHandler<DialogResult>() {
+                @Override
+                public void handle(DialogResult resultValue) {
+                    Node errorNode = editor.paneRoot.lookup("#" + exception.getCauseColumn().getPhysicalName());
+                    if (errorNode != null) {
+                        errorNode.requestFocus();
+                    }
+                    try {
+                        editor.getDataController().getDatabase().rollback();
+                    } catch (SQLException exception) {
+                        editor.close();
+                    }
+                }
+            });
         }
     }
 
     @Override
-    protected void beforeCloseDoPreparation() throws Exception {
+    protected void beforeCloseDoPreparation() {
+        this.getDataController().getDatabase().close();
     }
 
 }
