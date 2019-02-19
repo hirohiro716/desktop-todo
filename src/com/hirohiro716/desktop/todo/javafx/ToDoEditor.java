@@ -97,7 +97,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
      */
     private void updateContentFromSetting() throws SQLException {
         Screen screen = Screen.getPrimary();
-        double tableWidth = screen.getVisualBounds().getWidth() - 200;
+        double tableWidth = screen.getVisualBounds().getWidth() - 360;
         try (Database database = new Database()) {
             database.connect();
             try (Setting setting = new Setting(database)) {
@@ -153,9 +153,10 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
         this.getStage().setResizable(false);
         this.getStage().setTitle(this.getDataController().getDescription());
         Screen screen = Screen.getPrimary();
-        this.getStage().setWidth(screen.getVisualBounds().getWidth());
-        this.getStage().setHeight(screen.getVisualBounds().getHeight());
-        this.vboxRoot.setMaxSize(screen.getVisualBounds().getWidth() - 200, screen.getVisualBounds().getHeight() - 200);
+        this.getStage().setWidth(screen.getVisualBounds().getWidth() - 200);
+        this.getStage().setHeight(screen.getVisualBounds().getHeight() - 200);
+        this.getStage().setX(screen.getVisualBounds().getMinX() + 100);
+        this.getStage().setY(screen.getVisualBounds().getMinY() + 100);
         this.getStage().getScene().setFill(null);
         FormHelper.applyIcon(this.getStage());
         FormHelper.applyBugFix(this.getStage());
@@ -177,7 +178,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
             }
         });
         // RudeArrayTableを初期化する
-        this.preparationToDoTable(screen.getBounds().getWidth());
+        this.preparationToDoTable(screen.getVisualBounds().getWidth());
         // 追加
         this.buttonAdd.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -271,7 +272,6 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
      */
     private void preparationToDoTable(double screenWidth) throws SQLException {
         ToDoEditor editor = this;
-        double tableWidth = screenWidth - 200;
         // 関連ディレクトリ
         this.rudeArrayTable.addColumnHyperlink(Column.DIRECTORY.getPhysicalName(), Column.DIRECTORY.getLogicalName(), new EditableTable.ReadOnlyControlFactory<RudeArray, Hyperlink>() {
             @Override
@@ -326,7 +326,6 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 }
             }
         });
-        this.rudeArrayTable.getHeaderLabel(Column.DIRECTORY.getPhysicalName()).setPrefWidth(tableWidth * 0.15);
         // ファイル数
         this.rudeArrayTable.addColumnLabel(COLUMN_ID_OF_ITEM_COUNT, "アイテム数", new EditableTable.ReadOnlyControlFactory<RudeArray, Label>() {
             @Override
@@ -366,7 +365,6 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 editor.updateItemCountLabel(item, control);
             }
         });
-        this.rudeArrayTable.getHeaderLabel(COLUMN_ID_OF_ITEM_COUNT).setPrefWidth(tableWidth * 0.1);
         // 詳細
         this.rudeArrayTable.addColumnLabel(Column.DESCRIPTION.getPhysicalName(), Column.DESCRIPTION.getLogicalName(), new EditableTable.ReadOnlyControlFactory<RudeArray, Label>() {
             @Override
@@ -410,7 +408,6 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 }
             }
         });
-        this.rudeArrayTable.getHeaderLabel(Column.DESCRIPTION.getPhysicalName()).setPrefWidth(tableWidth * 0.65);
         // 削除
         this.rudeArrayTable.addColumnButton(COLUMN_ID_OF_DELETE, "削除", new FixControlFactory<RudeArray, ImeOffButton>() {
             @Override
@@ -441,7 +438,6 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 return button;
             }
         });
-        this.rudeArrayTable.getHeaderLabel(COLUMN_ID_OF_DELETE).setPrefWidth(tableWidth * 0.05);
     }
     
     /**
