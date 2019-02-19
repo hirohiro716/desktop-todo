@@ -450,6 +450,8 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
      */
     private void updateItemCountLabel(RudeArray row, Label label) {
         String directory = StringConverter.nullReplace(row.getString(Column.DIRECTORY.getPhysicalName()), "");
+        String css = label.getStyle();
+        css = CSSHelper.updateStyleValue(css, "-fx-text-fill", this.textFill);
         if (FileHelper.isExistsDirectory(directory)) {
             File file = new File(directory);
             int numberOfInnerFiles = file.list().length;
@@ -459,15 +461,13 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
             builder.append(" / ");
             builder.append(limit);
             label.setText(builder.toString());
-            String css = label.getStyle();
-            css = CSSHelper.updateStyleValue(css, "-fx-text-fill", this.textFill);
             if (limit < numberOfInnerFiles) {
                 css = CSSHelper.updateStyleValue(css, "-fx-text-fill", "#c00");
             }
-            label.setStyle(css);
         } else {
             label.setText("-");
         }
+        label.setStyle(css);
     }
     
     /**
