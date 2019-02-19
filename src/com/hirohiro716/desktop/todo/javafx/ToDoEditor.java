@@ -110,7 +110,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 // フォント
                 css = this.vboxRoot.getStyle();
                 css = CSSHelper.updateStyleValue(css, "-fx-font-size", allSettings.getString(Property.FONT_SIZE.getPhysicalName()));
-                css = CSSHelper.updateStyleValue(css, "-fx-font-family", allSettings.getString(Property.FONT_STYLE.getPhysicalName()));
+                css = CSSHelper.updateStyleValue(css, "-fx-font-family", StringConverter.join("\"", allSettings.getString(Property.FONT_STYLE.getPhysicalName()), "\""));
                 this.vboxRoot.setStyle(css);
                 // テキスト色
                 this.textFill = allSettings.getString(Property.TEXT_FILL.getPhysicalName());
