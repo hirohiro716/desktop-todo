@@ -105,6 +105,13 @@ public class SettingEditor extends AbstractEditor<Setting> {
                 ImeHelper.apply(limitTextField, ImeMode.OFF);
                 limitTextField.setText(this.allSettings.getString(property.getPhysicalName()));
                 break;
+            case OFFSET_X:
+            case OFFSET_Y:
+                limitTextField = finder.findLimitTextField("#" + property.getPhysicalName());
+                limitTextField.addPermitRegex(RegexPattern.DECIMAL_NEGATIVE.getPattern(), false);
+                ImeHelper.apply(limitTextField, ImeMode.OFF);
+                limitTextField.setText(this.allSettings.getString(property.getPhysicalName()));
+                break;
             case COLUMN_WIDTH_RATE_ITEM_COUNT:
             case COLUMN_WIDTH_RATE_DIRECTORY:
             case COLUMN_WIDTH_RATE_DESCRIPTION:
@@ -138,6 +145,8 @@ public class SettingEditor extends AbstractEditor<Setting> {
             case BACKGROUND:
             case TEXT_FILL:
             case SELECTED_ROW_BACKGROUND:
+            case OFFSET_X:
+            case OFFSET_Y:
             case COLUMN_WIDTH_RATE_ITEM_COUNT:
             case COLUMN_WIDTH_RATE_DIRECTORY:
             case COLUMN_WIDTH_RATE_DESCRIPTION:

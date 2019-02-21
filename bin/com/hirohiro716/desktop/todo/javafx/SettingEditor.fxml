@@ -28,7 +28,7 @@
             </HBox>
             <HBox spacing="5.0" alignment="CENTER_LEFT">
                 <Label text="フォントサイズ" minWidth="120.0" alignment="CENTER_RIGHT" />
-                <LimitTextField fx:id="font_size" />
+                <LimitTextField fx:id="font_size" prefWidth="70.0" alignment="CENTER_RIGHT" />
             </HBox>
             <HBox spacing="5.0" alignment="CENTER_LEFT">
                 <Label text="背景色" minWidth="120.0" alignment="CENTER_RIGHT" />
@@ -41,6 +41,14 @@
             <HBox spacing="5.0" alignment="CENTER_LEFT">
                 <Label text="選択行の背景色" minWidth="120.0" alignment="CENTER_RIGHT" />
                 <LimitTextField fx:id="selected_row_background" />
+            </HBox>
+            <HBox spacing="5.0" alignment="CENTER_LEFT">
+                <Label text="画面オフセット(横)" minWidth="120.0" alignment="CENTER_RIGHT" />
+                <LimitTextField fx:id="offset_x" prefWidth="70.0" alignment="CENTER_RIGHT" />
+            </HBox>
+            <HBox spacing="5.0" alignment="CENTER_LEFT">
+                <Label text="画面オフセット(縦)" minWidth="120.0" alignment="CENTER_RIGHT" />
+                <LimitTextField fx:id="offset_y" prefWidth="70.0" alignment="CENTER_RIGHT" />
             </HBox>
         </VBox>
         <VBox spacing="5.0">

@@ -173,6 +173,12 @@ public class Setting extends AbstractBindTableRows {
                     validator.addBlankCheck();
                     validator.execute(row.getString(key));
                     break;
+                case OFFSET_X:
+                case OFFSET_Y:
+                    validator.addBlankCheck();
+                    validator.addDecimalCheck();
+                    validator.execute(row.getShort(key));
+                    break;
                 case COLUMN_WIDTH_RATE_DIRECTORY:
                 case COLUMN_WIDTH_RATE_ITEM_COUNT:
                 case COLUMN_WIDTH_RATE_DESCRIPTION:
@@ -202,6 +208,8 @@ public class Setting extends AbstractBindTableRows {
             case BACKGROUND:
             case TEXT_FILL:
             case SELECTED_ROW_BACKGROUND:
+            case OFFSET_X:
+            case OFFSET_Y:
             case COLUMN_WIDTH_RATE_DIRECTORY:
             case COLUMN_WIDTH_RATE_ITEM_COUNT:
             case COLUMN_WIDTH_RATE_DESCRIPTION:
@@ -225,6 +233,8 @@ public class Setting extends AbstractBindTableRows {
         BACKGROUND("背景色", "rgba(255,255,255,1)"),
         TEXT_FILL("文字色", "#333"),
         SELECTED_ROW_BACKGROUND("選択行の背景色", "rgba(100,100,100,1)"),
+        OFFSET_X("画面の横方向オフセット", 0),
+        OFFSET_Y("画面の縦方向オフセット", 0),
         COLUMN_WIDTH_RATE_DIRECTORY("関連ディレクトリの幅比率", 0.15),
         COLUMN_WIDTH_RATE_ITEM_COUNT("アイテム数の幅比率", 0.1),
         COLUMN_WIDTH_RATE_DESCRIPTION("説明の幅比率", 0.65),

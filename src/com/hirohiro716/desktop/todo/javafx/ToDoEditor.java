@@ -97,7 +97,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
      */
     private void updateContentFromSetting() throws SQLException {
         Screen screen = Screen.getPrimary();
-        double tableWidth = screen.getVisualBounds().getWidth() - 360;
+        double tableWidth = screen.getVisualBounds().getWidth() - leftAndRightMargin * 2 - 80 * 2;
         try (Database database = new Database()) {
             database.connect();
             try (Setting setting = new Setting(database)) {
@@ -126,6 +126,11 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 }
                 // 選択行の背景色
                 this.rudeArrayTable.setSelectedRowColor(allSettings.getString(Property.SELECTED_ROW_BACKGROUND.getPhysicalName()));
+                // 位置
+                double offsetX = StringConverter.stringToDouble(allSettings.getString(Property.OFFSET_X.getPhysicalName()));
+                double offsetY = StringConverter.stringToDouble(allSettings.getString(Property.OFFSET_Y.getPhysicalName()));
+                this.getStage().setX(screen.getVisualBounds().getMinX() + leftAndRightMargin + offsetX);
+                this.getStage().setY(screen.getVisualBounds().getMinY() + topAndBottomMargin + offsetY);
                 // テーブル
                 double directoryWidth = tableWidth * StringConverter.stringToDouble(allSettings.getString(Property.COLUMN_WIDTH_RATE_DIRECTORY.getPhysicalName()));
                 double itemCountWidth = tableWidth * StringConverter.stringToDouble(allSettings.getString(Property.COLUMN_WIDTH_RATE_ITEM_COUNT.getPhysicalName()));
@@ -145,6 +150,10 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
     
     private String textFill = (String) Property.TEXT_FILL.getDefaultValue();
     
+    private static final double leftAndRightMargin = 100;
+    
+    private static final double topAndBottomMargin = 100;
+    
     @Override
     protected void beforeShowDoPreparation() throws IOException, SQLException {
         ToDoEditor editor = this;
@@ -153,10 +162,8 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
         this.getStage().setResizable(false);
         this.getStage().setTitle(this.getDataController().getDescription());
         Screen screen = Screen.getPrimary();
-        this.getStage().setWidth(screen.getVisualBounds().getWidth() - 200);
-        this.getStage().setHeight(screen.getVisualBounds().getHeight() - 200);
-        this.getStage().setX(screen.getVisualBounds().getMinX() + 100);
-        this.getStage().setY(screen.getVisualBounds().getMinY() + 100);
+        this.getStage().setWidth(screen.getVisualBounds().getWidth() - leftAndRightMargin * 2);
+        this.getStage().setHeight(screen.getVisualBounds().getHeight() - topAndBottomMargin * 2);
         this.getStage().getScene().setFill(null);
         FormHelper.applyIcon(this.getStage());
         FormHelper.applyBugFix(this.getStage());
