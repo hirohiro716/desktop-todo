@@ -41,6 +41,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
@@ -109,8 +110,9 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 css = CSSHelper.updateStyleValue(css, "-fx-background-color", allSettings.getString(Property.BACKGROUND.getPhysicalName()));
                 this.paneRoot.setStyle(css);
                 // フォント
+                String fontSize = allSettings.getString(Property.FONT_SIZE.getPhysicalName());
                 css = this.vboxRoot.getStyle();
-                css = CSSHelper.updateStyleValue(css, "-fx-font-size", allSettings.getString(Property.FONT_SIZE.getPhysicalName()));
+                css = CSSHelper.updateStyleValue(css, "-fx-font-size", fontSize);
                 css = CSSHelper.updateStyleValue(css, "-fx-font-family", StringConverter.join("\"", allSettings.getString(Property.FONT_STYLE.getPhysicalName()), "\""));
                 this.vboxRoot.setStyle(css);
                 // テキスト色
@@ -118,8 +120,18 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 for (Node node: this.paneRoot.lookupAll("Label")) {
                     if (COLUMN_ID_OF_ITEM_COUNT.equals(node.getId())) {
                         Label label = (Label) node;
+                        Label innerLabel = (Label) label.getGraphic();
+                        Long fontSizeLong = StringConverter.stringToLong(fontSize);
+                        if (fontSizeLong == null) {
+                        	fontSizeLong = StringConverter.stringToLong(Property.FONT_SIZE.getDefaultValue().toString());
+                        }
+                        css = StringConverter.join("-fx-background-radius:", fontSizeLong * 1.5, ";");
+                        innerLabel.setStyle(css);
+                        double innerLabelSize = fontSizeLong * 3;
+                        innerLabel.setMaxSize(innerLabelSize, innerLabelSize);
+                        innerLabel.setMinSize(innerLabelSize, innerLabelSize);
                         RudeArray item = this.rudeArrayTable.findRelationalItem(label);
-                        this.updateItemCountLabel(item, label);
+                        this.updateItemCountLabel(item, innerLabel);
                     } else {
                         node.setStyle(CSSHelper.updateStyleValue(node.getStyle(), "-fx-text-fill", this.textFill));
                     }
@@ -339,6 +351,10 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
             public Label newInstance(RudeArray item) {
                 Label label = new Label();
                 label.setAlignment(Pos.CENTER);
+                Label innerLabel = new Label();
+                innerLabel.setAlignment(Pos.CENTER);
+                label.setGraphic(innerLabel);
+                label.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
                 label.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
@@ -369,7 +385,8 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
             }
             @Override
             public void setValueForControl(RudeArray item, Label control) {
-                editor.updateItemCountLabel(item, control);
+            	Label innerLabel = (Label) control.getGraphic();
+                editor.updateItemCountLabel(item, innerLabel);
             }
         });
         // 詳細
@@ -450,28 +467,31 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
     /**
      * アイテム数の数が制限を超えたときは赤字で表示する.
      * @param row TODOの行情報
-     * @param label 対象のLabel
+     * @param innerLabel 対象のInnerLabel
      */
-    private void updateItemCountLabel(RudeArray row, Label label) {
+    private void updateItemCountLabel(RudeArray row, Label innerLabel) {
         String directory = StringConverter.nullReplace(row.getString(Column.DIRECTORY.getPhysicalName()), "");
-        String css = label.getStyle();
-        css = CSSHelper.updateStyleValue(css, "-fx-text-fill", this.textFill);
+        String css = innerLabel.getStyle();
         if (FileHelper.isExistsDirectory(directory)) {
             File file = new File(directory);
             int numberOfInnerFiles = file.list().length;
             int limit = row.getInteger(Column.LIMIT_OF_ITEM_COUNT.getPhysicalName());
             StringBuilder builder = new StringBuilder();
             builder.append(numberOfInnerFiles);
-            builder.append(" / ");
-            builder.append(limit);
-            label.setText(builder.toString());
+            innerLabel.setText(builder.toString());
             if (limit < numberOfInnerFiles) {
-                css = CSSHelper.updateStyleValue(css, "-fx-text-fill", "#c00");
+                css = CSSHelper.updateStyleValue(css, "-fx-text-fill", "#fff");
+                css = CSSHelper.updateStyleValue(css, "-fx-background-color", "#900");
+                css = CSSHelper.updateStyleValue(css, "-fx-effect", "dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1)");
+            } else {
+                css = CSSHelper.updateStyleValue(css, "-fx-text-fill", this.textFill);
+                css = CSSHelper.removeStyle(css, "-fx-background-color");
+                css = CSSHelper.removeStyle(css, "-fx-effect");
             }
         } else {
-            label.setText("-");
+            innerLabel.setText("-");
         }
-        label.setStyle(css);
+        innerLabel.setStyle(css);
     }
     
     /**
