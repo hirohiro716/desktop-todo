@@ -13,7 +13,7 @@
 <?import com.hirohiro716.javafx.control.*?>
 <?import com.hirohiro716.javafx.control.table.*?>
 
-<AnchorPane fx:id="paneRoot" prefHeight="800.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="paneRoot" prefHeight="800.0" prefWidth="1500.0" style="-fx-background-radius:7;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <StackPane AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
         <VBox fx:id="vboxRoot" spacing="10.0">
             <Label text="TODO" style="-fx-font-size:150%; -fx-font-weight:bold;">
