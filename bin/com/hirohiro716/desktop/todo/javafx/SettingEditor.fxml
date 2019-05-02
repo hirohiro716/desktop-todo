@@ -20,7 +20,7 @@
             <HBox spacing="5.0" alignment="CENTER_LEFT">
                 <Label text="ファイラー" minWidth="120.0" alignment="CENTER_RIGHT" />
                 <LimitTextField id="filer" />
-                <ImeOffButton fx:id="buttonFiler" text="選択" />
+                <IMEOffButton fx:id="buttonFiler" text="選択" />
             </HBox>
             <HBox spacing="5.0" alignment="CENTER_LEFT">
                 <Label text="フォントスタイル" minWidth="120.0" alignment="CENTER_RIGHT" />
@@ -76,11 +76,11 @@
             </FlowPane>
         </VBox>
         <HBox spacing="10.0" alignment="CENTER_RIGHT">
-            <ImeOffButton fx:id="buttonSave" text="保存">
+            <IMEOffButton fx:id="buttonSave" text="保存">
                 <padding>
                     <Insets top="10.0" right="20.0" bottom="10.0" left="20.0" />
                 </padding>
-            </ImeOffButton>
+            </IMEOffButton>
         </HBox>
         <padding>
             <Insets top="20.0" right="20.0" bottom="20.0" left="20.0" />

@@ -23,32 +23,32 @@
             </Label>
             <RudeArrayTable fx:id="rudeArrayTable" VBox.vgrow="ALWAYS" />
             <HBox spacing="10.0" alignment="CENTER_RIGHT">
-                <ImeOffButton fx:id="buttonAdd" text="追加">
+                <IMEOffButton fx:id="buttonAdd" text="追加">
                     <padding>
                         <Insets top="10.0" right="20.0" bottom="10.0" left="20.0" />
                     </padding>
-                </ImeOffButton>
-                <ImeOffButton fx:id="buttonSort" text="並び替え">
+                </IMEOffButton>
+                <IMEOffButton fx:id="buttonSort" text="並び替え">
                     <padding>
                         <Insets top="10.0" right="20.0" bottom="10.0" left="20.0" />
                     </padding>
-                </ImeOffButton>
+                </IMEOffButton>
                 <HBox spacing="10.0" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                    <ImeOffButton fx:id="buttonSetting" text="設定">
+                    <IMEOffButton fx:id="buttonSetting" text="設定">
                         <padding>
                             <Insets top="10.0" right="20.0" bottom="10.0" left="20.0" />
                         </padding>
-                    </ImeOffButton>
-                    <ImeOffButton fx:id="buttonMinimize" text="最小化">
+                    </IMEOffButton>
+                    <IMEOffButton fx:id="buttonMinimize" text="最小化">
                         <padding>
                             <Insets top="10.0" right="20.0" bottom="10.0" left="20.0" />
                         </padding>
-                    </ImeOffButton>
-                    <ImeOffButton fx:id="buttonClose" text="終了">
+                    </IMEOffButton>
+                    <IMEOffButton fx:id="buttonClose" text="終了">
                         <padding>
                             <Insets top="10.0" right="20.0" bottom="10.0" left="20.0" />
                         </padding>
-                    </ImeOffButton>
+                    </IMEOffButton>
                 </HBox>
             </HBox>
             <padding>
