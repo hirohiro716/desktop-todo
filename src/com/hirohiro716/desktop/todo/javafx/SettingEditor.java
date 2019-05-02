@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import com.hirohiro716.InterfaceKeyInputRobotJapanese.ImeMode;
+import com.hirohiro716.robot.InterfaceTypingRobotJapanese.IMEMode;
 import com.hirohiro716.RegexHelper.RegexPattern;
 import com.hirohiro716.RudeArray;
 import com.hirohiro716.database.ValidationException;
@@ -13,7 +13,7 @@ import com.hirohiro716.desktop.todo.Database;
 import com.hirohiro716.desktop.todo.Setting;
 import com.hirohiro716.desktop.todo.Setting.Property;
 import com.hirohiro716.file.FileHelper;
-import com.hirohiro716.javafx.ImeHelper;
+import com.hirohiro716.javafx.IMEHelper;
 import com.hirohiro716.javafx.PaneNodeFinder;
 import com.hirohiro716.javafx.control.LimitTextField;
 import com.hirohiro716.javafx.data.AbstractEditor;
@@ -73,7 +73,7 @@ public class SettingEditor extends AbstractEditor<Setting> {
             switch (property) {
             case FILER:
                 limitTextField = finder.findLimitTextField("#" + property.getPhysicalName());
-                ImeHelper.apply(limitTextField, ImeMode.OFF);
+                IMEHelper.apply(limitTextField, IMEMode.OFF);
                 this.buttonFiler.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -95,21 +95,21 @@ public class SettingEditor extends AbstractEditor<Setting> {
             case FONT_SIZE:
                 limitTextField = finder.findLimitTextField("#" + property.getPhysicalName());
                 limitTextField.addPermitRegex(RegexPattern.INTEGER_NARROW_ONLY.getPattern(), false);
-                ImeHelper.apply(limitTextField, ImeMode.OFF);
+                IMEHelper.apply(limitTextField, IMEMode.OFF);
                 limitTextField.setText(this.allSettings.getString(property.getPhysicalName()));
                 break;
             case BACKGROUND:
             case TEXT_FILL:
             case SELECTED_ROW_BACKGROUND:
                 limitTextField = finder.findLimitTextField("#" + property.getPhysicalName());
-                ImeHelper.apply(limitTextField, ImeMode.OFF);
+                IMEHelper.apply(limitTextField, IMEMode.OFF);
                 limitTextField.setText(this.allSettings.getString(property.getPhysicalName()));
                 break;
             case OFFSET_X:
             case OFFSET_Y:
                 limitTextField = finder.findLimitTextField("#" + property.getPhysicalName());
                 limitTextField.addPermitRegex(RegexPattern.DECIMAL_NEGATIVE.getPattern(), false);
-                ImeHelper.apply(limitTextField, ImeMode.OFF);
+                IMEHelper.apply(limitTextField, IMEMode.OFF);
                 limitTextField.setText(this.allSettings.getString(property.getPhysicalName()));
                 break;
             case COLUMN_WIDTH_RATE_ITEM_COUNT:
@@ -118,7 +118,7 @@ public class SettingEditor extends AbstractEditor<Setting> {
             case COLUMN_WIDTH_RATE_DELETE:
                 limitTextField = finder.findLimitTextField("#" + property.getPhysicalName());
                 limitTextField.addPermitRegex(RegexPattern.DECIMAL.getPattern(), false);
-                ImeHelper.apply(limitTextField, ImeMode.OFF);
+                IMEHelper.apply(limitTextField, IMEMode.OFF);
                 limitTextField.setText(this.allSettings.getString(property.getPhysicalName()));
                 break;
             }

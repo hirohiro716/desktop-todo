@@ -17,7 +17,7 @@ import com.hirohiro716.desktop.todo.ToDo;
 import com.hirohiro716.desktop.todo.ToDo.Column;
 import com.hirohiro716.file.FileHelper;
 import com.hirohiro716.javafx.CSSHelper;
-import com.hirohiro716.javafx.control.ImeOffButton;
+import com.hirohiro716.javafx.control.IMEOffButton;
 import com.hirohiro716.javafx.control.table.EditableTable;
 import com.hirohiro716.javafx.control.table.EditableTable.FixControlFactory;
 import com.hirohiro716.javafx.control.table.RudeArrayTable;
@@ -433,10 +433,10 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
             }
         });
         // 削除
-        this.rudeArrayTable.addColumnButton(COLUMN_ID_OF_DELETE, "削除", new FixControlFactory<RudeArray, ImeOffButton>() {
+        this.rudeArrayTable.addColumnButton(COLUMN_ID_OF_DELETE, "削除", new FixControlFactory<RudeArray, IMEOffButton>() {
             @Override
-            public ImeOffButton newInstance(RudeArray item) {
-                ImeOffButton button = new ImeOffButton("削除");
+            public IMEOffButton newInstance(RudeArray item) {
+                IMEOffButton button = new IMEOffButton("削除");
                 button.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
