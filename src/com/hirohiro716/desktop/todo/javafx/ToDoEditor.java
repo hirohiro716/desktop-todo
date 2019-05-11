@@ -167,7 +167,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
     private static final double topAndBottomMargin = 100;
     
     @Override
-    protected void beforeShowDoPreparation() throws IOException, SQLException {
+    protected void beforeShowPrepare() throws IOException, SQLException {
         ToDoEditor editor = this;
         this.setFxml(this.getClass().getResource(this.getClass().getSimpleName() + ".fxml"));
         this.getStage().initStyle(StageStyle.TRANSPARENT);
@@ -541,7 +541,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
     }
 
     @Override
-    protected void beforeCloseDoPreparation() {
+    protected void beforeClosePrepare() {
         this.getDataController().getDatabase().close();
     }
 

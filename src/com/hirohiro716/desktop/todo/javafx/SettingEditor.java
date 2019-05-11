@@ -58,7 +58,7 @@ public class SettingEditor extends AbstractEditor<Setting> {
     }
 
     @Override
-    protected void beforeShowDoPreparation() throws IOException {
+    protected void beforeShowPrepare() throws IOException {
         SettingEditor editor = this;
         this.setFxml(this.getClass().getResource(this.getClass().getSimpleName() + ".fxml"));
         this.getStage().setResizable(false);
@@ -198,7 +198,7 @@ public class SettingEditor extends AbstractEditor<Setting> {
     }
 
     @Override
-    protected void beforeCloseDoPreparation() {
+    protected void beforeClosePrepare() {
         this.getDataController().getDatabase().close();
     }
 
