@@ -9,7 +9,7 @@ import com.hirohiro716.database.InterfaceColumn;
 import com.hirohiro716.database.ValidationException;
 import com.hirohiro716.database.sqlite.AbstractBindTableRows;
 import com.hirohiro716.database.sqlite.SQLite;
-import com.hirohiro716.file.xml.InterfaceProperty;
+import com.hirohiro716.InterfaceProperty;
 import com.hirohiro716.validate.StringValidator;
 
 /**
