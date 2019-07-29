@@ -18,8 +18,8 @@ import com.hirohiro716.javafx.PaneNodeFinder;
 import com.hirohiro716.javafx.control.LimitTextField;
 import com.hirohiro716.javafx.data.AbstractEditor;
 import com.hirohiro716.javafx.dialog.DialogResult;
-import com.hirohiro716.javafx.dialog.InterfaceDialog.CloseEventHandler;
-import com.hirohiro716.javafx.dialog.alert.AlertPane;
+import com.hirohiro716.javafx.dialog.AbstractDialog.CloseEventHandler;
+import com.hirohiro716.javafx.dialog.alert.Alert;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -169,7 +169,7 @@ public class SettingEditor extends AbstractEditor<Setting> {
             this.getDataController().getDatabase().commit();
             this.close();
         } catch (SQLException exception) {
-            AlertPane.show(ERROR_DIALOG_TITLE_SAVE, exception.getMessage(), editor.paneRoot, new CloseEventHandler<DialogResult>() {
+            Alert.showOnPane(ERROR_DIALOG_TITLE_SAVE, exception.getMessage(), editor.paneRoot, new CloseEventHandler<DialogResult>() {
                 @Override
                 public void handle(DialogResult resultValue) {
                     try {
@@ -180,7 +180,7 @@ public class SettingEditor extends AbstractEditor<Setting> {
                 }
             });
         } catch (ValidationException exception) {
-            AlertPane.show(ERROR_DIALOG_TITLE_VALIDATION, exception.getMessage(), editor.paneRoot, new CloseEventHandler<DialogResult>() {
+            Alert.showOnPane(ERROR_DIALOG_TITLE_VALIDATION, exception.getMessage(), editor.paneRoot, new CloseEventHandler<DialogResult>() {
                 @Override
                 public void handle(DialogResult resultValue) {
                     Node errorNode = editor.paneRoot.lookup("#" + exception.getCauseColumn().getPhysicalName());

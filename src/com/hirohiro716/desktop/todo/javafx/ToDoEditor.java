@@ -23,13 +23,13 @@ import com.hirohiro716.javafx.control.table.EditableTable.FixControlFactory;
 import com.hirohiro716.javafx.control.table.RudeArrayTable;
 import com.hirohiro716.javafx.data.AbstractEditor;
 import com.hirohiro716.javafx.dialog.DialogResult;
-import com.hirohiro716.javafx.dialog.InterfaceDialog.CloseEventHandler;
-import com.hirohiro716.javafx.dialog.alert.AlertPane;
+import com.hirohiro716.javafx.dialog.AbstractDialog.CloseEventHandler;
+import com.hirohiro716.javafx.dialog.alert.Alert;
 import com.hirohiro716.javafx.dialog.alert.InstantAlert;
-import com.hirohiro716.javafx.dialog.confirm.ConfirmPane;
-import com.hirohiro716.javafx.dialog.sort.SortPaneDialog;
-import com.hirohiro716.javafx.dialog.text.LimitTextAreaPaneDialog;
-import com.hirohiro716.javafx.dialog.text.LimitTextFieldPaneDialog;
+import com.hirohiro716.javafx.dialog.confirm.Confirm;
+import com.hirohiro716.javafx.dialog.sort.SortDialog;
+import com.hirohiro716.javafx.dialog.text.LimitTextAreaDialog;
+import com.hirohiro716.javafx.dialog.text.LimitTextFieldDialog;
 import com.hirohiro716.validate.StringValidator;
 
 import javafx.beans.value.ChangeListener;
@@ -223,7 +223,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 for (RudeArray row: editor.rudeArrayTable.getItems()) {
                     hashMap.put(row, row.getString(Column.DESCRIPTION.getPhysicalName()));
                 }
-                SortPaneDialog<RudeArray> dialog = new SortPaneDialog<>(hashMap, editor.paneRoot);
+                SortDialog<RudeArray> dialog = new SortDialog<>(hashMap);
                 dialog.setTitle("並び替え");
                 dialog.setMessage("マウスで並び替えを行ってOKを押してください。");
                 dialog.setCloseEvent(new CloseEventHandler<LinkedHashMap<RudeArray,String>>() {
@@ -246,7 +246,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                         }
                     }
                 });
-                dialog.show();
+                dialog.showOnPane(editor.paneRoot);
             }
         });
         // 設定
@@ -361,7 +361,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                         if (event.getClickCount() != 2 || event.getButton() != MouseButton.PRIMARY) {
                             return;
                         }
-                        LimitTextFieldPaneDialog dialog = new LimitTextFieldPaneDialog(editor.paneRoot);
+                        LimitTextFieldDialog dialog = new LimitTextFieldDialog();
                         dialog.setTitle("制限の入力");
                         dialog.setMessage("アイテム数の制限を入力してOKを押してください。");
                         dialog.setDefaultValue(item.getString(Column.LIMIT_OF_ITEM_COUNT.getPhysicalName()));
@@ -378,7 +378,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                                 }
                             }
                         });
-                        dialog.show();
+                        dialog.showOnPane(editor.paneRoot);
                     }
                 });
                 return label;
@@ -400,7 +400,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                         if (event.getClickCount() != 2 || event.getButton() != MouseButton.PRIMARY) {
                             return;
                         }
-                        LimitTextAreaPaneDialog dialog = new LimitTextAreaPaneDialog(editor.paneRoot);
+                        LimitTextAreaDialog dialog = new LimitTextAreaDialog();
                         dialog.setTitle("説明の入力");
                         dialog.setMessage("説明を入力してOKを押してください。");
                         dialog.setDefaultValue(item.getString(Column.DESCRIPTION.getPhysicalName()));
@@ -414,7 +414,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                                 }
                             }
                         });
-                        dialog.show();
+                        dialog.showOnPane(editor.paneRoot);
                     }
                 });
                 label.setPadding(new Insets(20, 20, 20, 20));
@@ -440,7 +440,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                 button.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        ConfirmPane dialog = new ConfirmPane(editor.paneRoot);
+                        Confirm dialog = new Confirm();
                         dialog.setTitle("確認");
                         String description = StringConverter.nullReplace(item.getString(Column.DESCRIPTION.getPhysicalName()), "");
                         if (description.length() == 0) {
@@ -456,7 +456,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
                                 }
                             }
                         });
-                        dialog.show();
+                        dialog.showOnPane(editor.paneRoot);
                     }
                 });
                 return button;
@@ -527,7 +527,7 @@ public class ToDoEditor extends AbstractEditor<ToDo> {
             this.getDataController().update();
             this.getDataController().getDatabase().commit();
         } catch (Exception exception) {
-            AlertPane.show(ERROR_DIALOG_TITLE_SAVE, exception.getMessage(), editor.paneRoot, new CloseEventHandler<DialogResult>() {
+            Alert.showOnPane(ERROR_DIALOG_TITLE_SAVE, exception.getMessage(), editor.paneRoot, new CloseEventHandler<DialogResult>() {
                 @Override
                 public void handle(DialogResult resultValue) {
                     try {
