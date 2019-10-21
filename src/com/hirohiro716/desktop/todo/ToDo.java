@@ -100,7 +100,7 @@ public class ToDo extends AbstractBindTableRows {
     }
 
     @Override
-    protected void updateToEditingFinish() throws SQLException {
+    protected void updateToEditingFinish(SQLite sqlite) throws SQLException {
     }
 
     @Override
