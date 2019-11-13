@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/scent-java"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/scent-javafx"/>
 	<classpathentry kind="lib" path="libs/sqlite-jdbc-3.21.0.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/bin"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/oracle-jdk-8"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/scent-javafx"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/scent-java-8"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
